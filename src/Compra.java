@@ -1,4 +1,7 @@
-package com.company;
+/**
+ * @Author Adrián García Domíguez
+ * 21/02/2022
+ */
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -7,62 +10,44 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-
+/**
+ * Classe de compra
+ */
 public class Compra {
+	/**
+	 * Nom del supermercat
+	 */
 	public static final String NOM_SUPERMERCAT = "SAPAMERCAT";
-	private static Scanner sc = new Scanner(System.in); 
-	
+	/**
+	 * Scanner
+	 */
+	private static Scanner sc = new Scanner(System.in);
+	/**
+	 * llista de aliments
+	 */
 	private List<Alimentacio> llista_ali;
+	/**
+	 * llista de electronics
+	 */
 	private List<Electronica> llista_elec;
+	/**
+	 * llista de textils
+	 */
 	private List<Textil> llista_textil;
 
+	/**
+	 * Aquesta funcio inicialitza els arrayList
+	 */
 	public Compra() {
 		llista_ali = new ArrayList<Alimentacio>();
 		llista_elec = new ArrayList<Electronica>();
-		llista_textil = new ArrayList<Textil>();
+	llista_textil = new ArrayList<Textil>();
 	}
 
-	public static void main(String... args) {
-		int op,opP;
-		Compra compra = new Compra();
-
-		System.out.println("BENVINNGUT AL " + Compra.NOM_SUPERMERCAT);
-		do {
-			op = compra.menuPrincipal();
-			switch(op) {
-				case 1:
-					do {
-						opP =  compra.menuProducte();
-						switch(opP) {
-							case 1:
-								System.out.println("Afegir aliment");
-								compra.addAliment();
-								break;
-							case 2:
-								System.out.println("Afegir tèxtil");
-								compra.addTextil();
-								break;
-							case 3:
-								System.out.println("Afegir electrònica");
-								compra.addElectronica();
-								break;
-							default: break;
-						}
-					}while(opP!=0);
-					break;
-				case 2: compra.passarCaixa(); break;
-				case 3:
-					System.out.println("Carret");
-					compra.printCarret();
-					break;
-				case 0:	System.out.println("Gràcies per la seva visita"); break;
-				default: break;
-			}
-
-		}while(op!=0);
-
-	}
-
+	/**
+	 * Aquesta funcio mostra el menu principal i pregunta a l'usuari l'opcio que vol i la agafa.
+	 * @return int retorna l'integer que s'ha introduit
+	 */
 	public int menuPrincipal() {
 		int op;
 		System.out.println("------------");
@@ -77,6 +62,10 @@ public class Compra {
 		return op;
 	}
 
+	/**
+	 * Aquesta funcio mostra el menu de producte i pregunta a l'usuari l'opcio que vol i la agafa.
+	 * @return int retorna l'integer que s'ha introduit
+	 */
 	public int menuProducte() {
 		int op;
 		System.out.println("---------------");
@@ -90,8 +79,10 @@ public class Compra {
 		op = Integer.parseInt(sc.nextLine());
 		return op;
 	}
-	
-	
+
+	/**
+	 * Afegeix un element al arrayList de aliments
+	 */
 	public void addAliment() {
 		String nom, codi;
 		float preu;
@@ -108,7 +99,10 @@ public class Compra {
 		LocalDate ld = readDate();
 		llista_ali.add(new Alimentacio(preu,nom,codi,ld));
 	}
-	
+
+	/**
+	 * Afegeix un element al arrayList de textils
+	 */
 	public void addTextil() {
 		String nom, compo, codi;
 		float preu;
@@ -124,7 +118,10 @@ public class Compra {
 		
 		llista_textil.add(new Textil(preu,nom,codi,compo));	
 	}
-	
+
+	/**
+	 * Afegeix un element al arrayList de electronica
+	 */
 	public void addElectronica() {
 		String nom,codi;
 		float preu;
@@ -143,6 +140,11 @@ public class Compra {
 	}
 	
 	//Llistar les tres llistes
+
+	/**
+	 * Aquesta funcio imprimex el contingut de les tres llistes
+	 */
+
 	public void printCarret() {
 		Map<String,Integer> llista = new HashMap<>();
 
@@ -175,7 +177,10 @@ public class Compra {
 		}*/
 
 	}
-	
+
+	/**
+	 * Aquesta funcio busca i agafa els preus de tots els productes afegits i calcula i imprimeix el total
+	 */
 	public void passarCaixa() {
 		double total = 0;
 		Set<Alimentacio> ali_uniq = new HashSet<Alimentacio>(llista_ali);
@@ -216,6 +221,11 @@ public class Compra {
 		llista_textil.clear();
 	}
 
+	/**
+	 * Aquesta funcio damana la data que introdueix l'usuari, si l'usuari la introdueix malament la torna a demanar fins que estigiu be.
+	 * @return LocalDate retorna la data introuida per l'usuari
+	 */
+	//REFACT no fa falta tornar a posar el valor false al catch
 	private LocalDate readDate() {
 		LocalDate d = null;
 		boolean dateOK = false;
@@ -227,12 +237,16 @@ public class Compra {
 				dateOK = true;
 			} catch (DateTimeException e) {
 				System.out.print("Torna a entrar la data: ");
-				dateOK = false;
 			}
 		}
 		return d;
 	}
 
+	/**
+	 * Aquesta funcio agafa el nom del producte a traves del codi de barres
+	 * @param codib String codi de barres del producte a buscar
+	 * @return String nom del producte trobat
+	 */
 	private String getNomProducte(String codib) {
 		//Mirem a les tres llistes
 		List<Producte> list = llista_ali.stream().filter(o -> o.getCodibarres().equals(codib)).distinct().collect(Collectors.toList());
@@ -241,7 +255,9 @@ public class Compra {
 		return list.get(0).getNom();
 	}
 
-	//mètode a realitzar per a la versió 2.1
+	/**
+	 * TODO Aquesta versio s'ha de reallitzar per la versio 2.1
+	 */
 	public void compararPreus(){
 		Compra compra = new Compra();	
 	}
